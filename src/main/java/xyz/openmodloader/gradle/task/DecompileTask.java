@@ -58,7 +58,7 @@ public class DecompileTask extends AbstractTask {
 
                 this.getLogger().lifecycle(":decompiling minecraft");
 
-                Process process = Runtime.getRuntime().exec("java -jar " + Constants.FERNFLOWER_JAR.getAbsolutePath() + " -dgs=1 -hdc=0 -asc=1 -udv=0 -din=1 -rbr=0 -rsy=1 " + Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath() + " " + Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath());
+                Process process = Runtime.getRuntime().exec("java -jar " + Constants.FERNFLOWER_JAR.getAbsolutePath() + " -dgs=1 -hdc=0 -asc=1 -udv=0 -din=1 -rbr=0 -rsy=1 -ind=4 " + Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath() + " " + Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath());
                 InputStream stdin = process.getInputStream();
                 InputStreamReader streamReader = new InputStreamReader(stdin);
                 BufferedReader bufferedReader = new BufferedReader(streamReader);
