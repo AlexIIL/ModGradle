@@ -27,7 +27,6 @@ public class DecompileTask extends AbstractTask {
                     public JavaExecSpec call()
                     {
                         JavaExecSpec exec = (JavaExecSpec) getDelegate();
-                        Constants.MINECRAFT_MAPPED_CLIENT.mkdir();
                         exec.args(
                                 Constants.SPECIALSOURCE_JAR.getAbsolutePath(),
                                 "map",
