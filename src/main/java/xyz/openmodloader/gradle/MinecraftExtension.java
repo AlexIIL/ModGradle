@@ -16,6 +16,8 @@ public class MinecraftExtension {
     public static String mappingsGroup;
     @Input
     public static boolean genCompilePatches = false;
+    @Input
+    public static String runDir = "run";
 
     public MinecraftExtension () {
     }

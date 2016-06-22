@@ -42,6 +42,15 @@ public class PatchMinecraftTask extends AbstractTask {
 
             FileUtils.copyDirectory(FileLocations.MINECRAFT_SRC_PATCHED, FileLocations.workingMcSource);
 
+            File assets = new File(FileLocations.workingMcSource, "assets");
+            if(FileLocations.workingMcResources.exists()){
+                FileUtils.deleteDirectory(FileLocations.workingMcResources);
+            }
+
+            FileLocations.workingMcResources.mkdirs();
+
+            FileUtils.moveDirectory(assets, new File(FileLocations.workingMcResources, "assets"));
+
             System.out.println("Applying patches");
             failedPatches = 0;
             succesfullPatches = 0;

@@ -29,13 +29,8 @@ public class GenIdeaRun {
 	public String mainClass;
 	public String runDir;
 	public String arguments;
-	public File outputFile;
 
-	public void genRuns() throws IOException, ParserConfigurationException, TransformerException {
-		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-
-		Document doc = docBuilder.newDocument();
+	public Element genRuns(Element doc) throws IOException, ParserConfigurationException, TransformerException {
 		Element root = addXml(doc, "component", ImmutableMap.of("name", "ProjectRunConfigurationManager"));
 		root = addXml(root, "configuration", ImmutableMap.of(
 				"default", "false",
@@ -50,15 +45,7 @@ public class GenIdeaRun {
 		if (!Strings.isNullOrEmpty(arguments)) {
 			addXml(root, "option", ImmutableMap.of("name", "PROGRAM_PARAMETERS", "value", arguments));
 		}
-
-		outputFile.getParentFile().mkdirs();
-
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		Transformer transformer = transformerFactory.newTransformer();
-		DOMSource source = new DOMSource(doc);
-		StreamResult result = new StreamResult(outputFile);
-
-		transformer.transform(source, result);
+		return root;
 	}
 
 	public static Element addXml(Node parent, String name, Map<String, String> values) {

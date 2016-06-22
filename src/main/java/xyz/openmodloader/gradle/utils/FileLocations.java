@@ -28,8 +28,10 @@ public class FileLocations {
     public static final File MINECRAFT_NATIVES = new File(CACHE_FILES, "natives");
     public static final File minecraftJson = new File(CACHE_FILES, MinecraftExtension.version + "-info.json");
 
-    public static final File workingDir = new File(WORKING_DIRECTORY, "work");
-    public static final File workingMcSource = new File(workingDir, "src");
+    public static final File workingDir = new File(WORKING_DIRECTORY, "minecraft");
+    public static final File minecraftSourcesMain = new File(workingDir, "src" + File.separator + "main");
+    public static final File workingMcSource = new File(minecraftSourcesMain, "java");
+    public static final File workingMcResources = new File(minecraftSourcesMain, "resources");
     /**
      * Fixes errors that happen when decompiling
      */

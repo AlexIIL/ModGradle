@@ -1,6 +1,7 @@
 package xyz.openmodloader.gradle.tasks.idea;
 
 import com.google.gson.Gson;
+import xyz.openmodloader.gradle.MinecraftExtension;
 import xyz.openmodloader.gradle.tasks.download.Version;
 import xyz.openmodloader.gradle.utils.FileLocations;
 import org.gradle.api.internal.AbstractTask;
@@ -56,8 +57,13 @@ public class GenIdeaProjectTask extends AbstractTask {
 		}
 
 		Element sourceFolder = doc.createElement("sourceFolder");
-		sourceFolder.setAttribute("url", "file://$MODULE_DIR$/work/src");
+		sourceFolder.setAttribute("url", "file://$MODULE_DIR$/minecraft/src/main/java");
 		sourceFolder.setAttribute("isTestSource", "false");
+		content.appendChild(sourceFolder);
+
+		sourceFolder = doc.createElement("sourceFolder");
+		sourceFolder.setAttribute("url", "file://$MODULE_DIR$/minecraft/src/main/resources");
+		sourceFolder.setAttribute("type", "java-resource");
 		content.appendChild(sourceFolder);
 
 		Gson gson = new Gson();
@@ -93,14 +99,43 @@ public class GenIdeaProjectTask extends AbstractTask {
 		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 		transformer.transform(source, result);
 
+		genRuns();
+		File runDir = new File(FileLocations.WORKING_DIRECTORY, MinecraftExtension.runDir);
+		if(!runDir.exists()){
+			runDir.mkdirs();
+		}
+	}
+
+	public void genRuns() throws ParserConfigurationException, IOException, SAXException, TransformerException {
+		File file = new File(getProject().getName() + ".iws");
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+		Document doc = docBuilder.parse(file);
+
+		NodeList list = doc.getElementsByTagName("component");
+		Element runManager = null;
+		for (int i = 0; i < list.getLength(); i++) {
+			Element element = (Element) list.item(i);
+			if(element.getAttribute("name").equals("RunManager")){
+				runManager = element;
+				break;
+			}
+		}
+
 		GenIdeaRun ideaClient = new GenIdeaRun();
 		ideaClient.mainClass = "xyz.openmodloader.client.RunOMLClient";
 		ideaClient.projectName = getProject().getName();
-		ideaClient.configName = "Open Mod Gradle Client";
-		ideaClient.outputFile = new File(FileLocations.WORKING_DIRECTORY, "/.idea/runConfigurations/OML_Client.xml");
-		ideaClient.runDir = "file://$PROJECT_DIR$/run";
-		ideaClient.arguments = "-Djava.library.path=" + FileLocations.MINECRAFT_NATIVES.getAbsolutePath();
-		ideaClient.genRuns();
+		ideaClient.configName = "Minecraft Client";
+		ideaClient.runDir = "file://$PROJECT_DIR$/" + MinecraftExtension.runDir;
+
+		runManager.appendChild(ideaClient.genRuns(runManager));
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		DOMSource source = new DOMSource(doc);
+		StreamResult result = new StreamResult(file);
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+		transformer.transform(source, result);
 	}
 
 }
