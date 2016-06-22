@@ -1,11 +1,13 @@
 package xyz.openmodloader.gradle.util;
 
-import java.io.File;
-import java.util.function.Function;
-
-import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.delayed.DelayedFile;
 import xyz.openmodloader.gradle.util.delayed.IDelayed;
+
+import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Constants {
     public static final File WORKING_DIRECTORY = new File(".");
@@ -43,4 +45,15 @@ public class Constants {
     public static final String LIBRARIES_BASE = "https://libraries.minecraft.net/";
     public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
     public static final String DOWNLOAD_BASE = "http://s3.amazonaws.com/Minecraft.Download/";
+
+
+    public static List<String> getClassPath()
+    {
+        URL[] urls = ((URLClassLoader) Constants.class.getClassLoader()).getURLs();
+
+        ArrayList<String> list = new ArrayList<>();
+        for (URL url : urls)
+            list.add(url.getPath());
+        return list;
+    }
 }

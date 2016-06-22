@@ -1,18 +1,16 @@
 package xyz.openmodloader.gradle.task;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
+import groovy.lang.Closure;
 import org.apache.commons.io.FileUtils;
-
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.process.ExecResult;
+import org.gradle.process.JavaExecSpec;
 import org.zeroturnaround.zip.ZipUtil;
-
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Constants;
+
+import java.io.IOException;
 
 public class DecompileTask extends AbstractTask {
     @TaskAction
@@ -21,23 +19,44 @@ public class DecompileTask extends AbstractTask {
             ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
 
             if (!Constants.MINECRAFT_MAPPED_CLIENT.exists()) {
-                if (Constants.MAPPING_SRG.get(extension).exists()) {
-                    this.getLogger().lifecycle(":remapping classes");
+                this.getLogger().lifecycle(":remapping classes");
 
-                    Process process = Runtime.getRuntime().exec("java -jar " + Constants.SPECIALSOURCE_JAR.getAbsolutePath() + " map -i " + Constants.MINECRAFT_CLIENT_JAR.get(extension).getAbsolutePath() + " -m " + Constants.MAPPING_SRG.get(extension).getAbsolutePath() + " -o" + Constants.MINECRAFT_MAPPED_CLIENT.getAbsolutePath());
-                    InputStream stdin = process.getInputStream();
-                    InputStreamReader streamReader = new InputStreamReader(stdin);
-                    BufferedReader bufferedReader = new BufferedReader(streamReader);
+                // TODO: Separate task
+                ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this)
+                {
+                    public JavaExecSpec call()
+                    {
+                        JavaExecSpec exec = (JavaExecSpec) getDelegate();
+                        Constants.MINECRAFT_MAPPED_CLIENT.mkdir();
+                        exec.args(
+                                Constants.SPECIALSOURCE_JAR.getAbsolutePath(),
+                                "map",
+                                "-i",
+                                Constants.MINECRAFT_CLIENT_JAR.get(extension).getAbsolutePath(),
+                                "-m",
+                                Constants.MAPPING_SRG.get(extension).getAbsolutePath(),
+                                "-o",
+                                Constants.MINECRAFT_MAPPED_CLIENT.getAbsolutePath()
+                        );
+                        exec.setMain("-jar");
+                        exec.setWorkingDir(Constants.CACHE_FILES);
+                        exec.classpath(Constants.getClassPath());
+                        exec.setStandardOutput(System.out); // TODO: store the logs?
+                        exec.setMaxHeapSize("512M");
 
-                    String line;
-                    while ((line = bufferedReader.readLine()) != null) {
-                        this.getLogger().info(line);
+                        return exec;
                     }
-                    int exitValue = process.waitFor();
-                    if (exitValue != 0) {
-                        this.getLogger().info(":specialsource exit value: " + exitValue);
-                        throw new RuntimeException("SpecialSource failed to decompile");
+
+                    public JavaExecSpec call(Object obj)
+                    {
+                        return call();
                     }
+                });
+
+                int exitValue = result.getExitValue();
+                if (exitValue != 0) {
+                    this.getLogger().error(":SpecialSource exit value: " + exitValue);
+                    throw new RuntimeException("SpecialSource failed to decompile");
                 }
             }
 
@@ -54,23 +73,47 @@ public class DecompileTask extends AbstractTask {
             }
 
             if (!Constants.MINECRAFT_SRC_DECOMP.exists()) {
-                Constants.MINECRAFT_SRC_DECOMP.mkdir();
+                this.getLogger().lifecycle(":decompiling Minecraft");
 
-                this.getLogger().lifecycle(":decompiling minecraft");
+                // TODO: Separate task
+                ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this)
+                {
+                    public JavaExecSpec call()
+                    {
+                        JavaExecSpec exec = (JavaExecSpec) getDelegate();
+                        Constants.MINECRAFT_SRC_DECOMP.mkdir();
+                        exec.args(
+                                Constants.FERNFLOWER_JAR.getAbsolutePath(),
+                                "-dgs=1",
+                                "-hdc=0",
+                                "-asc=1",
+                                "-udv=0",
+                                "-din=1",
+                                "-rbr=0",
+                                "-rsy=1",
+                                //"-log=ERROR", //
+                                Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath(),
+                                Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath()
+                        );
+                        exec.setMain("-jar");
+                        exec.setWorkingDir(Constants.CACHE_FILES);
+                        exec.classpath(Constants.getClassPath());
+                        exec.setStandardOutput(System.out); // TODO: store the logs?
+                        exec.setMaxHeapSize("512M");
 
-                Process process = Runtime.getRuntime().exec("java -jar " + Constants.FERNFLOWER_JAR.getAbsolutePath() + " -dgs=1 -hdc=0 -asc=1 -udv=0 -din=1 -rbr=0 -rsy=1 " + Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath() + " " + Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath());
-                InputStream stdin = process.getInputStream();
-                InputStreamReader streamReader = new InputStreamReader(stdin);
-                BufferedReader bufferedReader = new BufferedReader(streamReader);
+                        return exec;
+                    }
 
-                String line;
-                while ((line = bufferedReader.readLine()) != null) {
-                    this.getLogger().info(line);
-                }
-                int exitValue = process.waitFor();
+                    public JavaExecSpec call(Object obj)
+                    {
+                        return call();
+                    }
+                });
+
+                int exitValue = result.getExitValue();
                 if (exitValue != 0) {
-                    this.getLogger().info(":fernflower exit value: " + exitValue);
-                    throw new RuntimeException("Fernflower failed to decompile");
+                    this.getLogger().error(":FernFlower exit value: " + exitValue);
+                    throw new RuntimeException("FernFlower failed to decompile");
                 }
             }
 
@@ -79,7 +122,7 @@ public class DecompileTask extends AbstractTask {
             }
 
             FileUtils.copyDirectory(Constants.MINECRAFT_SRC_DECOMP, Constants.MINECRAFT_SRC_PATCHED);
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
