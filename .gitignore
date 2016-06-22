@@ -1,0 +1,15 @@
+/.idea
+
+/work
+/tools
+# Created by .ignore support plugin (hsz.mobi)
+/build
+/.gradle
+*.log
+*.reject
+/run/
+
+*.iml
+*.ipr
+*.iws
+/out
