@@ -82,7 +82,7 @@ public class DownloadTask extends AbstractTask {
                 assets.mkdirs();
             }
 
-            File assetsInfo = new File(Constants.CACHE_FILES, "indexes" + File.separator + assetIndex.id + ".json");
+            File assetsInfo = new File(assets, "indexes" + File.separator + assetIndex.id + ".json");
             if (!assetsInfo.exists() || !Checksum.equals(assetsInfo, assetIndex.sha1)) {
                 this.getLogger().lifecycle(":downloading asset index");
                 FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
