@@ -14,6 +14,8 @@ public class MinecraftExtension {
     public static String mappings;
     @Input
     public static String mappingsGroup;
+    @Input
+    public static boolean genCompilePatches = false;
 
     public MinecraftExtension () {
     }

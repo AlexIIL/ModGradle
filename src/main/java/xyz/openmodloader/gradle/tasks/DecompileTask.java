@@ -29,11 +29,11 @@ public class DecompileTask extends AbstractTask {
 
                     String line;
                     while ((line = br.readLine()) != null)
-                        System.out.println(line);
+                        getLogger().info(line);
                     int exitVal = proc.waitFor();
                     if (exitVal != 0) {
-                        System.out.println("Process exitValue: " + exitVal);
-                        return;
+                        getLogger().error("SpecialSource exitValue: " + exitVal);
+                        throw new RuntimeException("SpecialSource failed to decompile");
                     }
                 }
             }
@@ -61,11 +61,11 @@ public class DecompileTask extends AbstractTask {
 
                 String line;
                 while ((line = br.readLine()) != null)
-                    System.out.println(line);
+                    getLogger().info(line);
                 int exitVal = proc.waitFor();
                 if (exitVal != 0) {
-                    System.out.println("Process exitValue: " + exitVal);
-                    return;
+                    getLogger().error("Fernflower exitValue: " + exitVal);
+                    throw new RuntimeException("Fernflower failed to decompile");
                 }
 
             }
