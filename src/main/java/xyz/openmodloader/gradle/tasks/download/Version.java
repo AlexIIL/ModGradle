@@ -13,11 +13,18 @@ public class Version {
 
     public List<Library> libraries;
     public HashMap<String, Downloads> downloads;
+    public AssetIndex assetIndex;
 
     public class Downloads {
         public String url;
         public String sha1;
         public int size;
+    }
+
+    public class AssetIndex {
+        public String id;
+        public String sha1;
+        public String url;
     }
 
     public class Library {

@@ -2,6 +2,7 @@ package xyz.openmodloader.gradle.tasks.download;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import xyz.openmodloader.gradle.MinecraftExtension;
 import xyz.openmodloader.gradle.utils.Checksum;
 import xyz.openmodloader.gradle.utils.FileLocations;
@@ -9,9 +10,11 @@ import org.apache.commons.io.FileUtils;
 import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.tasks.TaskAction;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Optional;
 
 public class DownloadTask extends AbstractTask {
@@ -63,6 +66,19 @@ public class DownloadTask extends AbstractTask {
                     }
                 }
             }
+
+            Version.AssetIndex assetIndex = version.assetIndex;
+
+            File assets = new File(FileLocations.workingMcResources, "assets");
+            if(!assets.exists()){
+                assets.mkdirs();
+            }
+            File assetsInfo = new File(assets, assetIndex.id + "-assets.json");
+            if(!assetsInfo.exists() || !Checksum.sameChecksum(assetsInfo, assetIndex.sha1)){
+                FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
+            }
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
