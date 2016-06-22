@@ -1,18 +1,14 @@
-package xyz.openmodloader.gradle.tasks.download;
+package xyz.openmodloader.gradle.util;
 
 import com.google.gson.JsonObject;
-import xyz.openmodloader.gradle.utils.FileLocations;
-import xyz.openmodloader.gradle.utils.MojangConstants;
-import xyz.openmodloader.gradle.utils.OSUtils;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Version {
-
     public List<Library> libraries;
-    public HashMap<String, Downloads> downloads;
+    public Map<String, Downloads> downloads;
     public AssetIndex assetIndex;
 
     public class Downloads {
@@ -28,7 +24,6 @@ public class Version {
     }
 
     public class Library {
-
         public String name;
         public JsonObject natives;
         public JsonObject downloads;
@@ -39,46 +34,48 @@ public class Version {
             String path;
             String[] parts = this.name.split(":", 3);
             path = parts[0].replace(".", "/") + "/" + parts[1] + "/" + parts[2] + "/" + parts[1] + "-" + parts[2] + getClassifier() + ".jar";
-            return MojangConstants.LIBRARIES_BASE.getURL(path);
+            return Constants.LIBRARIES_BASE + path;
         }
-
 
         public File getFile() {
             String[] parts = this.name.split(":", 3);
-            return new File(FileLocations.MINECRAFT_LIBS, parts[1] + "-" + parts[2] + getClassifier() + ".jar");
+            return new File(Constants.MINECRAFT_LIBS, parts[1] + "-" + parts[2] + getClassifier() + ".jar");
         }
 
         public String getSha1() {
-            if (this.downloads == null)
+            if (this.downloads == null) {
                 return "";
-
-            if (this.downloads.getAsJsonObject("artifact") == null)
+            } else if (this.downloads.getAsJsonObject("artifact") == null) {
                 return "";
-
-            if (this.downloads.getAsJsonObject("artifact").get("sha1") == null)
+            } else if (this.downloads.getAsJsonObject("artifact").get("sha1") == null) {
                 return "";
-            return this.downloads.getAsJsonObject("artifact").get("sha1").getAsString();
+            } else {
+                return this.downloads.getAsJsonObject("artifact").get("sha1").getAsString();
+            }
         }
 
         public String getClassifier() {
             if (natives == null) {
                 return "";
+            } else {
+                return "-" + natives.get(OperatingSystem.getOS().replace("${arch}", OperatingSystem.getArch())).getAsString().replace("\"", "");
             }
-            return "-" + natives.get(OSUtils.getOS().replace("${arch}", OSUtils.getArch())).getAsString().replace("\"", "");
         }
 
         public boolean allowed() {
-            if (this.rules == null || this.rules.length <= 0)
+            if (this.rules == null || this.rules.length <= 0) {
                 return true;
+            }
 
             boolean success = false;
             for (Rule rule : this.rules) {
                 if (rule.os != null && rule.os.name != null) {
-                    if (rule.os.name.equalsIgnoreCase(OSUtils.getOS()))
+                    if (rule.os.name.equalsIgnoreCase(OperatingSystem.getOS())) {
                         return rule.action.equalsIgnoreCase("allow");
-                } else
+                    }
+                } else {
                     success = rule.action.equalsIgnoreCase("allow");
-
+                }
             }
             return success;
         }

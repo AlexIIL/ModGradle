@@ -1,7 +1,6 @@
-package xyz.openmodloader.gradle.utils;
+package xyz.openmodloader.gradle.util;
 
-public class OSUtils {
-
+public class OperatingSystem {
     public static String getOS() {
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {

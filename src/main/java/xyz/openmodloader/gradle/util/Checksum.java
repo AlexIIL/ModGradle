@@ -1,4 +1,4 @@
-package xyz.openmodloader.gradle.utils;
+package xyz.openmodloader.gradle.util;
 
 import com.google.common.hash.HashCode;
 import com.google.common.hash.Hashing;
@@ -8,17 +8,17 @@ import java.io.File;
 import java.io.IOException;
 
 public class Checksum {
-
-    public static boolean sameChecksum(File file, String checksum) {
+    public static boolean equals(File file, String checksum) {
+        if (file == null) {
+            return false;
+        }
         try {
-            if (file == null)
-                return false;
             HashCode hash = Files.hash(file, Hashing.sha1());
-            StringBuffer sb = new StringBuffer("");
+            StringBuilder builder = new StringBuilder();
             for (Byte hashBytes : hash.asBytes()) {
-                sb.append(Integer.toString((hashBytes & 0xff) + 0x100, 16).substring(1));
+                builder.append(Integer.toString((hashBytes & 0xFF) + 0x100, 16).substring(1));
             }
-            return sb.toString().equals(checksum);
+            return builder.toString().equals(checksum);
         } catch (IOException e) {
             e.printStackTrace();
         }
