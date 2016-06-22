@@ -1,7 +1,7 @@
-package xyz.openmodloader.gradle.task.download;
+package xyz.openmodloader.gradle.task;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Checksum;
 import xyz.openmodloader.gradle.util.Constants;
@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.Optional;
 
 public class DownloadTask extends AbstractTask {
@@ -28,9 +29,9 @@ public class DownloadTask extends AbstractTask {
                 FileUtils.copyURLToFile(new URL("https://launchermeta.mojang.com/mc/game/version_manifest.json"), Constants.VERSION_MANIFEST);
                 ManifestVersion mcManifest = new GsonBuilder().create().fromJson(FileUtils.readFileToString(Constants.VERSION_MANIFEST), ManifestVersion.class);
 
-                Optional<ManifestVersion.Versions> v = mcManifest.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(extension.version)).findFirst();
-                if (v.isPresent()) {
-                    FileUtils.copyURLToFile(new URL(v.get().url), Constants.MINECRAFT_JSON.get(extension));
+                Optional<ManifestVersion.Versions> optionalVersion = mcManifest.versions.stream().filter(versions -> versions.id.equalsIgnoreCase(extension.version)).findFirst();
+                if (optionalVersion.isPresent()) {
+                    FileUtils.copyURLToFile(new URL(optionalVersion.get().url), Constants.MINECRAFT_JSON.get(extension));
                 } else {
                     this.getLogger().info(":failed downloading minecraft json");
                     throw new RuntimeException("Failed downloading Minecraft json");
@@ -76,14 +77,27 @@ public class DownloadTask extends AbstractTask {
 
             Version.AssetIndex assetIndex = version.assetIndex;
 
-            File assets = new File(Constants.MINECRAFT_RESOURCES, "assets");
+            File assets = new File(Constants.CACHE_FILES, "assets");
             if (!assets.exists()) {
                 assets.mkdirs();
             }
 
-            File assetsInfo = new File(assets, assetIndex.id + "-assets.json");
+            File assetsInfo = new File(Constants.CACHE_FILES, "indexes" + File.separator + assetIndex.id + ".json");
             if (!assetsInfo.exists() || !Checksum.equals(assetsInfo, assetIndex.sha1)) {
+                this.getLogger().lifecycle(":downloading asset index");
                 FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
+            }
+
+            Map<String, JsonObject> map = new Gson().fromJson(new FileReader(assetsInfo), new TypeToken<Map<String, JsonObject>>(){}.getType());
+            JsonObject parent = map.get("objects").getAsJsonObject();
+            for (Map.Entry<String, JsonElement> entry : parent.entrySet()) {
+                JsonObject object = entry.getValue().getAsJsonObject();
+                String sha1 = object.get("hash").getAsString();
+                File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
+                if (!file.exists() || !Checksum.equals(file, sha1)) {
+                    this.getLogger().lifecycle(":downloading asset " + entry.getKey());
+                    FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

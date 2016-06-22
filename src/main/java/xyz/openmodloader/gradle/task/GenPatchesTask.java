@@ -1,4 +1,4 @@
-package xyz.openmodloader.gradle.task.patches;
+package xyz.openmodloader.gradle.task;
 
 import com.cloudbees.diff.Diff;
 import com.google.common.base.Charsets;
@@ -33,7 +33,7 @@ public class GenPatchesTask extends AbstractTask {
             for (Object obj : FileUtils.listFiles(Constants.MINECRAFT_SOURCES, new String[]{"java"}, true)) {
                 File input = (File) obj;
                 String targetOldPath = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SOURCES.getAbsolutePath(), Constants.MINECRAFT_SRC_PATCHED.getAbsolutePath());
-                String relative = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SOURCES.getAbsolutePath(), "");
+                String relative = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SOURCES.getAbsolutePath(), "").replace("\\", "/");
                 File original = new File(targetOldPath, input.getName());
                 this.processFile(relative, new FileInputStream(original), new FileInputStream(input), input.getName(), "patches");
             }
@@ -48,12 +48,9 @@ public class GenPatchesTask extends AbstractTask {
         if (changed == null) {
             this.getLogger().error(":changed file does not exist");
             return;
-        }
-
-        relative = relative.replace("\\", "/");
-
-        if (original == null) {
-            throw new RuntimeException("Original data for " + relative + " is null");
+        } else if (original == null) {
+            this.getLogger().error(":original file does not exist");
+            return;
         }
 
         byte[] oData = ByteStreams.toByteArray(original);

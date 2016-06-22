@@ -1,7 +1,8 @@
-package xyz.openmodloader.gradle.task.idea;
+package xyz.openmodloader.gradle.task;
 
 import com.google.gson.Gson;
 import xyz.openmodloader.gradle.ModGradleExtension;
+import xyz.openmodloader.gradle.util.IdeaRunConfig;
 import xyz.openmodloader.gradle.util.Version;
 import xyz.openmodloader.gradle.util.Constants;
 import org.gradle.api.internal.AbstractTask;
@@ -131,6 +132,7 @@ public class GenIdeaProjectTask extends AbstractTask {
         ideaClient.projectName = getProject().getName();
         ideaClient.configName = "Minecraft Client";
         ideaClient.runDir = "file://$PROJECT_DIR$/" + extension.runDir;
+        ideaClient.arguments = "--assetIndex " + version.assetIndex.id + " --assetsDir " + new File(Constants.CACHE_FILES, "assets").getAbsolutePath();
 
         runManager.appendChild(ideaClient.genRuns(runManager));
         transformerFactory = TransformerFactory.newInstance();

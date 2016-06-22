@@ -22,7 +22,7 @@ public class DecompileTask extends AbstractTask {
 
             if (!Constants.MINECRAFT_MAPPED_CLIENT.exists()) {
                 if (Constants.MAPPING_SRG.get(extension).exists()) {
-                    this.getLogger().lifecycle(":applying client class mappings");
+                    this.getLogger().lifecycle(":remapping classes");
 
                     Process process = Runtime.getRuntime().exec("java -jar " + Constants.SPECIALSOURCE_JAR.getAbsolutePath() + " map -i " + Constants.MINECRAFT_CLIENT_JAR.get(extension).getAbsolutePath() + " -m " + Constants.MAPPING_SRG.get(extension).getAbsolutePath() + " -o" + Constants.MINECRAFT_MAPPED_CLIENT.getAbsolutePath());
                     InputStream stdin = process.getInputStream();
@@ -42,7 +42,7 @@ public class DecompileTask extends AbstractTask {
             }
 
             if (!Constants.MINECRAFT_MAPPED.get(extension).exists()) {
-                this.getLogger().lifecycle(":unpacking minecraft classes");
+                this.getLogger().lifecycle(":unpacking minecraft jar");
 
                 ZipUtil.unpack(Constants.MINECRAFT_MAPPED_CLIENT, Constants.MINECRAFT_MAPPED.get(extension), name -> {
                     if (name.startsWith("net/minecraft") || name.startsWith("assets") || name.startsWith("log4j2.xml") || name.endsWith(".class")) {

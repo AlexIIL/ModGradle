@@ -1,4 +1,4 @@
-package xyz.openmodloader.gradle.task.patches;
+package xyz.openmodloader.gradle.task;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -97,6 +97,10 @@ public class PatchMinecraftTask extends AbstractTask {
                     }
                     bw.close();
                     successfulPatches++;
+                    File reject = new File(file.getAbsolutePath() + ".reject");
+                    if (reject.exists()) {
+                        reject.delete();
+                    }
                 } catch (PatchFailedException e) {
                     this.getLogger().lifecycle(":error applying patch for class " + file.getName().split("\\.")[0]);
                     this.getLogger().lifecycle(e.getMessage());

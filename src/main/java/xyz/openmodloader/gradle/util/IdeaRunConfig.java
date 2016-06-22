@@ -1,4 +1,4 @@
-package xyz.openmodloader.gradle.task.idea;
+package xyz.openmodloader.gradle.util;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;

@@ -3,16 +3,16 @@ package xyz.openmodloader.gradle;
 import com.google.common.collect.ImmutableMap;
 
 import org.gradle.api.plugins.JavaPlugin;
-import xyz.openmodloader.gradle.task.download.ExtractNativesTask;
-import xyz.openmodloader.gradle.task.idea.GenIdeaProjectTask;
+import xyz.openmodloader.gradle.task.ExtractNativesTask;
+import xyz.openmodloader.gradle.task.GenIdeaProjectTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.internal.AbstractTask;
 
 import xyz.openmodloader.gradle.task.DecompileTask;
-import xyz.openmodloader.gradle.task.download.DownloadTask;
-import xyz.openmodloader.gradle.task.patches.GenPatchesTask;
-import xyz.openmodloader.gradle.task.patches.PatchMinecraftTask;
+import xyz.openmodloader.gradle.task.DownloadTask;
+import xyz.openmodloader.gradle.task.GenPatchesTask;
+import xyz.openmodloader.gradle.task.PatchMinecraftTask;
 
 public class ModGradlePlugin implements Plugin<Project> {
     @Override

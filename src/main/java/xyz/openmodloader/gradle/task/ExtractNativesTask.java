@@ -1,4 +1,4 @@
-package xyz.openmodloader.gradle.task.download;
+package xyz.openmodloader.gradle.task;
 
 import com.google.gson.Gson;
 import xyz.openmodloader.gradle.ModGradleExtension;
@@ -16,7 +16,6 @@ public class ExtractNativesTask extends AbstractTask {
     @TaskAction
     public void extractNatives() throws FileNotFoundException {
         ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
-        extension.version = "1.10";
         Gson gson = new Gson();
         Version version = gson.fromJson(new FileReader(Constants.MINECRAFT_JSON.get(extension)), Version.class);
         File lwjglNativesJar = null;
@@ -27,7 +26,7 @@ public class ExtractNativesTask extends AbstractTask {
         }
 
         if (lwjglNativesJar == null) {
-            this.getLogger().info(":failed downloading natives");
+            this.getLogger().info(":failed extracting natives");
             return;
         }
 
