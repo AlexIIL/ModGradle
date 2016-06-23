@@ -64,7 +64,8 @@ public class GenPatchesTask extends AbstractTask {
             if (patchFile.exists()) {
                 oldDiff = Files.toString(patchFile, Charsets.UTF_8);
             }
-
+            newPatch = newPatch.replace("\r\n","\n").replace("\r", "\n");
+            oldDiff = oldDiff.replace("\r\n","\n").replace("\r", "\n");
             if (!oldDiff.equals(newPatch)) {
                 this.getLogger().info(":writing patch: " + patchFile);
                 patchFile.getParentFile().mkdirs();
