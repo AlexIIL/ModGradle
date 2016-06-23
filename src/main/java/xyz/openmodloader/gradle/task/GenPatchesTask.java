@@ -23,7 +23,7 @@ public class GenPatchesTask extends AbstractTask {
                 for (Object obj : FileUtils.listFiles(Constants.MINECRAFT_SRC_PATCHED, new String[]{"java"}, true)) {
                     File input = (File) obj;
                     String targetOldPath = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SRC_PATCHED.getAbsolutePath(), Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath());
-                    String relative = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SRC_PATCHED.getAbsolutePath(), "");
+                    String relative = input.getParentFile().getAbsolutePath().replace(Constants.MINECRAFT_SRC_PATCHED.getAbsolutePath(), "").replace("\\", "/");
                     File original = new File(targetOldPath, input.getName());
                     this.processFile(relative, new FileInputStream(original), new FileInputStream(input), input.getName(), "CompilePatches");
                 }
@@ -64,8 +64,7 @@ public class GenPatchesTask extends AbstractTask {
             if (patchFile.exists()) {
                 oldDiff = Files.toString(patchFile, Charsets.UTF_8);
             }
-            newPatch = newPatch.replace("\r\n","\n").replace("\r", "\n");
-            oldDiff = oldDiff.replace("\r\n","\n").replace("\r", "\n");
+
             if (!oldDiff.equals(newPatch)) {
                 this.getLogger().info(":writing patch: " + patchFile);
                 patchFile.getParentFile().mkdirs();
