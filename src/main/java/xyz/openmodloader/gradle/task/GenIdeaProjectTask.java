@@ -128,7 +128,7 @@ public class GenIdeaProjectTask extends AbstractTask {
         }
 
         IdeaRunConfig ideaClient = new IdeaRunConfig();
-        ideaClient.mainClass = "xyz.openmodloader.client.RunOMLClient";
+        ideaClient.mainClass = "xyz.openmodloader.launcher.OpenModLoaderClient";
         ideaClient.projectName = getProject().getName();
         ideaClient.configName = "Minecraft Client";
         ideaClient.runDir = "file://$PROJECT_DIR$/" + extension.runDir;
