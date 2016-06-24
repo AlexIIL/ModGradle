@@ -18,6 +18,7 @@ public class Constants {
 
     public static final File SPECIALSOURCE_JAR = new File(CACHE_FILES, "SpecialSource.jar");
     public static final File FERNFLOWER_JAR = new File(CACHE_FILES, "fernflower.jar");
+    public static final File FERNFLOWER_ZIP = new File(CACHE_FILES, "fernflower.zip");
 
     public static final File MINECRAFT_MAPPED_CLIENT = new File(CACHE_FILES, "minecraft-client-mapped.jar");
     public static final File MINECRAFT_MAPPED_SERVER = new File(CACHE_FILES, "minecraft-server-mapped.jar");
