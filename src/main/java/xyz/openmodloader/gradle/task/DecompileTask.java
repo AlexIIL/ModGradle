@@ -90,7 +90,7 @@ public class DecompileTask extends AbstractTask {
                                 "-din=1",
                                 "-rbr=0",
                                 "-rsy=1",
-                                "-ind='    '",
+                                "-ind=    ",
                                 //"-log=ERROR", //
                                 Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath(),
                                 Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath()
