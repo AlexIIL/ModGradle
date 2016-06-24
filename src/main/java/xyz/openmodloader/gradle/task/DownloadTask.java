@@ -2,7 +2,6 @@ package xyz.openmodloader.gradle.task;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
-import org.apache.commons.io.IOUtils;
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Checksum;
 import xyz.openmodloader.gradle.util.Constants;
@@ -12,13 +11,12 @@ import org.gradle.api.tasks.TaskAction;
 import xyz.openmodloader.gradle.util.ManifestVersion;
 import xyz.openmodloader.gradle.util.Version;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.Optional;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class DownloadTask extends AbstractTask {
     @TaskAction
@@ -58,26 +56,9 @@ public class DownloadTask extends AbstractTask {
                 FileUtils.copyURLToFile(new URL("https://modmuss50.me/files/grass/SpecialSource.jar"), Constants.SPECIALSOURCE_JAR);
             }
 
-            if (!Constants.FERNFLOWER_JAR.exists()) {
+            if (!Constants.FERNFLOWER_JAR.exists() || !Checksum.equals(Constants.FERNFLOWER_JAR, "b48932fc7ceb3dbd8b79a36e2d0c882496479a0e")) {
                 this.getLogger().lifecycle(":downloading fernflower");
-                FileUtils.copyURLToFile(new URL("http://files.minecraftforge.net/fernflower-fix-1.0.zip"), Constants.FERNFLOWER_ZIP);
-                try (ZipFile zipFile = new ZipFile(Constants.FERNFLOWER_ZIP)) {
-                    Enumeration<? extends ZipEntry> entries = zipFile.entries();
-                    while (entries.hasMoreElements()) {
-                        ZipEntry entry = entries.nextElement();
-                        File entryDestination = new File(Constants.CACHE_FILES, entry.getName());
-                        if (entry.isDirectory()) {
-                            entryDestination.mkdirs();
-                        } else {
-                            entryDestination.getParentFile().mkdirs();
-                            InputStream in = zipFile.getInputStream(entry);
-                            OutputStream out = new FileOutputStream(entryDestination);
-                            IOUtils.copy(in, out);
-                            IOUtils.closeQuietly(in);
-                            out.close();
-                        }
-                    }
-                }
+                FileUtils.copyURLToFile(new URL("https://modmuss50.me/files/grass/fernflower-2.0-SNAPSHOT.jar"), Constants.FERNFLOWER_JAR);
             }
 
             if (!Constants.MAPPING_SRG.get(extension).exists()) {

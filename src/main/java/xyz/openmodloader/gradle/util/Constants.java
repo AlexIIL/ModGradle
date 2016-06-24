@@ -17,8 +17,7 @@ public class Constants {
     public static final IDelayed<File> MINECRAFT_SERVER_JAR = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-server.jar"));
 
     public static final File SPECIALSOURCE_JAR = new File(CACHE_FILES, "SpecialSource.jar");
-    public static final File FERNFLOWER_JAR = new File(CACHE_FILES, "fernflower.jar");
-    public static final File FERNFLOWER_ZIP = new File(CACHE_FILES, "fernflower.zip");
+    public static final File FERNFLOWER_JAR = new File(CACHE_FILES, "fernflower-2.0-SNAPSHOT.jar");
 
     public static final File MINECRAFT_MAPPED_CLIENT = new File(CACHE_FILES, "minecraft-client-mapped.jar");
     public static final File MINECRAFT_MAPPED_SERVER = new File(CACHE_FILES, "minecraft-server-mapped.jar");

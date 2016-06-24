@@ -83,11 +83,15 @@ public class DecompileTask extends AbstractTask {
                         Constants.MINECRAFT_SRC_DECOMP.mkdir();
                         exec.args(
                                 Constants.FERNFLOWER_JAR.getAbsolutePath(),
+                                "-dgs=1",
+                                "-hdc=0",
+                                "-asc=1",
+                                "-udv=0",
                                 "-din=1",
                                 "-rbr=0",
-                                "-dgs=1",
-                                "-asc=1",
-                                "-log=ERROR",
+                                "-rsy=1",
+                                "-ind=    ",
+                                //"-log=ERROR", //
                                 Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath(),
                                 Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath()
                         );
