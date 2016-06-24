@@ -40,7 +40,7 @@ public class DecompileTask extends AbstractTask {
                         exec.setMain("-jar");
                         exec.setWorkingDir(Constants.CACHE_FILES);
                         exec.classpath(Constants.getClassPath());
-                        exec.setStandardOutput(System.out); // TODO: store the logs?
+                        //exec.setStandardOutput(System.out); // TODO: store the logs?
                         exec.setMaxHeapSize("512M");
 
                         return exec;
@@ -90,6 +90,7 @@ public class DecompileTask extends AbstractTask {
                                 "-din=1",
                                 "-rbr=0",
                                 "-rsy=1",
+                                "-ind=\"    \"",
                                 //"-log=ERROR", //
                                 Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath(),
                                 Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath()
@@ -97,7 +98,7 @@ public class DecompileTask extends AbstractTask {
                         exec.setMain("-jar");
                         exec.setWorkingDir(Constants.CACHE_FILES);
                         exec.classpath(Constants.getClassPath());
-                        exec.setStandardOutput(System.out); // TODO: store the logs?
+                        //exec.setStandardOutput(System.out); // TODO: store the logs?
                         exec.setMaxHeapSize("512M");
 
                         return exec;
