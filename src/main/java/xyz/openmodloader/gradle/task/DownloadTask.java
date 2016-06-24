@@ -58,7 +58,7 @@ public class DownloadTask extends AbstractTask {
 
             if (!Constants.FERNFLOWER_JAR.exists() || !Checksum.equals(Constants.FERNFLOWER_JAR, "b48932fc7ceb3dbd8b79a36e2d0c882496479a0e")) {
                 this.getLogger().lifecycle(":downloading fernflower");
-                FileUtils.copyURLToFile(new URL("https://modmuss50.me/files/grass/fernflower-2.0-SNAPSHOT.jar"), Constants.FERNFLOWER_JAR);
+                FileUtils.copyURLToFile(new URL("http://maven.ilexiconn.net/fernflower.jar"), Constants.FERNFLOWER_JAR);
             }
 
             if (!Constants.MAPPING_SRG.get(extension).exists()) {
