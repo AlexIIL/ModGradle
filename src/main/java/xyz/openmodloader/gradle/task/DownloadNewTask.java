@@ -19,7 +19,6 @@ import java.nio.channels.ReadableByteChannel;
 
 /**
  * Generic Download class compatible with ProgressLogger
- * Created by Thog the 25/06/2016
  */
 public class DownloadNewTask extends DefaultTask {
 
