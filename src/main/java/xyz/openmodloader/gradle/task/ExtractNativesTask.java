@@ -15,23 +15,8 @@ import java.io.FileReader;
 public class ExtractNativesTask extends AbstractTask {
     @TaskAction
     public void extractNatives() throws FileNotFoundException {
-        ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
-        Gson gson = new Gson();
-        Version version = gson.fromJson(new FileReader(Constants.MINECRAFT_JSON.get(extension)), Version.class);
-        File lwjglNativesJar = null;
-        for (Version.Library library : version.libraries) {
-            if (library.allowed() && library.natives != null && library.getFile().getName().startsWith("lwjgl")) {
-                lwjglNativesJar = library.getFile();
-            }
-        }
-
-        if (lwjglNativesJar == null) {
-            this.getLogger().info(":failed extracting natives");
-            return;
-        }
-
-        if (!Constants.MINECRAFT_NATIVES.exists()) {
-            ZipUtil.unpack(lwjglNativesJar, Constants.MINECRAFT_NATIVES);
-        }
+        if (!Constants.MINECRAFT_NATIVES.exists())
+            for (File source : getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES))
+                ZipUtil.unpack(source, Constants.MINECRAFT_NATIVES);
     }
 }

@@ -1,13 +1,18 @@
 package xyz.openmodloader.gradle.task;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.artifacts.Configuration;
+import org.gradle.api.artifacts.dsl.DependencyHandler;
+import org.gradle.api.internal.AbstractTask;
+import org.gradle.api.tasks.TaskAction;
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Checksum;
 import xyz.openmodloader.gradle.util.Constants;
-import org.apache.commons.io.FileUtils;
-import org.gradle.api.internal.AbstractTask;
-import org.gradle.api.tasks.TaskAction;
 import xyz.openmodloader.gradle.util.ManifestVersion;
 import xyz.openmodloader.gradle.util.Version;
 
@@ -66,14 +71,25 @@ public class DownloadTask extends AbstractTask {
                 FileUtils.copyURLToFile(new URL("http://modmuss50.me/files/grass/mappings/" + extension.version + "-obf2mcp.srg"), Constants.MAPPING_SRG.get(extension));
             }
 
-            for (Version.Library library : version.libraries) {
-                if (library.allowed() && library.getFile() != null) {
-                    if (!library.getFile().exists() || !Checksum.equals(library.getFile(), library.getSha1())) {
-                        this.getLogger().lifecycle(":downloading " + library.getURL());
-                        FileUtils.copyURLToFile(new URL(library.getURL()), library.getFile());
+            DependencyHandler dependencyHandler = getProject().getDependencies();
+
+            if (getProject().getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES).getState() == Configuration.State.UNRESOLVED) {
+                for (Version.Library library : version.libraries) {
+                    if (library.allowed() && library.getFile() != null) {
+                        // By default, they are all available on all sides
+                        String configName = Constants.CONFIG_MC_DEPENDENCIES;
+                        if (library.name.contains("java3d") || library.name.contains("paulscode") || library.name.contains("lwjgl") || library.name.contains("twitch") || library.name.contains("jinput"))
+                            configName = Constants.CONFIG_MC_DEPENDENCIES_CLIENT;
+                        dependencyHandler.add(configName, library.getArtifactName());
                     }
                 }
             }
+
+            if (getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES).getState() == Configuration.State.UNRESOLVED)
+                version.libraries.stream().filter(lib -> lib.natives != null).forEach(lib -> dependencyHandler.add(Constants.CONFIG_NATIVES, lib.getArtifactName()));
+
+            // Force add LaunchWrapper
+            dependencyHandler.add(Constants.CONFIG_MC_DEPENDENCIES, "net.minecraft:launchwrapper:1.11");
 
             Version.AssetIndex assetIndex = version.assetIndex;
 
@@ -88,7 +104,8 @@ public class DownloadTask extends AbstractTask {
                 FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
             }
 
-            Map<String, JsonObject> map = new Gson().fromJson(new FileReader(assetsInfo), new TypeToken<Map<String, JsonObject>>(){}.getType());
+            Map<String, JsonObject> map = new Gson().fromJson(new FileReader(assetsInfo), new TypeToken<Map<String, JsonObject>>() {
+            }.getType());
             JsonObject parent = map.get("objects").getAsJsonObject();
             for (Map.Entry<String, JsonElement> entry : parent.entrySet()) {
                 JsonObject object = entry.getValue().getAsJsonObject();

@@ -47,6 +47,13 @@ public class Constants {
     public static final String RESOURCES_BASE = "http://resources.download.minecraft.net/";
     public static final String DOWNLOAD_BASE = "http://s3.amazonaws.com/Minecraft.Download/";
 
+    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
+
+
+    public static final String CONFIG_NATIVES = "MC_NATIVES";
+    public static final String CONFIG_MC_DEPENDENCIES = "MC_DEPENDENCIES";
+    public static final String CONFIG_MC_DEPENDENCIES_CLIENT = "MC_DEPENDENCIES_CLIENT";
+    public static final String SYSTEM_ARCH = System.getProperty("os.arch").equals("64") ? "64" : "32";
 
     public static List<String> getClassPath()
     {

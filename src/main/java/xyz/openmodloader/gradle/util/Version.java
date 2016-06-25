@@ -26,7 +26,7 @@ public class Version {
         public String name;
         public JsonObject natives;
         public JsonObject downloads;
-
+        private Artifact artifact;
         public Rule[] rules;
 
         public String getURL() {
@@ -77,6 +77,51 @@ public class Version {
                 }
             }
             return success;
+        }
+
+        public String getArtifactName() {
+            if (artifact == null)
+                artifact = new Artifact(name);
+            return artifact.getArtifact(natives == null ? artifact.getClassifier() : natives.get(OperatingSystem.getOS()).getAsString());
+        }
+
+        private class Artifact {
+            private final String domain, name, version, classifier, ext;
+
+            public Artifact(String name) {
+                String[] splitedArtifact = name.split(":");
+                int idx = splitedArtifact[splitedArtifact.length - 1].indexOf('@');
+                if (idx != -1) {
+                    ext = splitedArtifact[splitedArtifact.length - 1].substring(idx + 1);
+                    splitedArtifact[splitedArtifact.length - 1] = splitedArtifact[splitedArtifact.length - 1].substring(0, idx);
+                } else ext = "jar";
+                this.domain = splitedArtifact[0];
+                this.name = splitedArtifact[1];
+                this.version = splitedArtifact[2];
+                this.classifier = splitedArtifact.length > 3 ? splitedArtifact[3] : null;
+            }
+
+            public String getArtifact(String classifier) {
+                String ret = domain + ":" + name + ":" + version;
+                if (classifier != null && classifier.indexOf('$') > -1)
+                    classifier = classifier.replace("${arch}", Constants.SYSTEM_ARCH);
+                if (classifier != null) ret += ":" + classifier;
+                if (!"jar".equals(ext)) ret += "@" + ext;
+                return ret;
+            }
+
+            public String getPath(String classifier) {
+                String ret = String.format("%s/%s/%s/%s-%s", domain.replace('.', '/'), name, version, name, version);
+                if (classifier != null && classifier.indexOf('$') > -1) {
+                    classifier = classifier.replace("${arch}", Constants.SYSTEM_ARCH.toString());
+                }
+                if (classifier != null) ret += "-" + classifier;
+                return ret + "." + ext;
+            }
+
+            public String getClassifier() {
+                return classifier;
+            }
         }
     }
 
