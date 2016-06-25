@@ -32,8 +32,7 @@ public class ProgressLogger {
         Class<?> progressLoggerFactoryClass = null;
         try {
             //Gradle 2.14 and higher
-            progressLoggerFactoryClass = Class.forName(
-                    "org.gradle.internal.logging.progress.ProgressLoggerFactory");
+            progressLoggerFactoryClass = Class.forName("org.gradle.internal.logging.progress.ProgressLoggerFactory");
         } catch (ClassNotFoundException e) {
             //prior to Gradle 2.14
             try {
@@ -46,7 +45,6 @@ public class ProgressLogger {
     }
 
     private Method getMethod(String methodName, Class<?>... args) {
-
         if (logger != null) {
             try {
                 return logger.getClass().getMethod(methodName, args);

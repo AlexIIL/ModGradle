@@ -118,17 +118,6 @@ public class Version {
                 return ret;
             }
 
-            public String getPath(String classifier) {
-                String ret = String.format("%s/%s/%s/%s-%s", domain.replace('.', '/'), name, version, name, version);
-                if (classifier != null && classifier.indexOf('$') > -1) {
-                    classifier = classifier.replace("${arch}", Constants.SYSTEM_ARCH.toString());
-                }
-                if (classifier != null) {
-                    ret += "-" + classifier;
-                }
-                return ret + "." + ext;
-            }
-
             public String getClassifier() {
                 return classifier;
             }

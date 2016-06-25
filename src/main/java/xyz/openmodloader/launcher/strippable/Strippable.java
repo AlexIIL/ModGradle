@@ -16,7 +16,7 @@ public @interface Strippable {
     @Retention(value = RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)
     @Repeatable(value = InterfaceContainer.class)
-    public static @interface Interface {
+    @interface Interface {
         String[] interfaces();
         
         Side side() default Side.UNIVERSAL;

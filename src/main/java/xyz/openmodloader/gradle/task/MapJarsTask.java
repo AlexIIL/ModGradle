@@ -13,7 +13,7 @@ import java.io.File;
 public class MapJarsTask extends DefaultTask {
 
     @TaskAction
-    public void map() {
+    public void mapJars() {
         ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
         if (!Constants.MINECRAFT_CLIENT_MAPPED_JAR.get(extension).exists() || !Constants.MINECRAFT_SERVER_MAPPED_JAR.get(extension).exists()) {
             this.getLogger().lifecycle(":remapping classes");
@@ -21,7 +21,6 @@ public class MapJarsTask extends DefaultTask {
             mapJarFile(Constants.MINECRAFT_SERVER_JAR.get(extension), Constants.MINECRAFT_SERVER_MAPPED_JAR.get(extension), extension);
         }
     }
-
 
     public void mapJarFile(File input, File output, ModGradleExtension extension) {
         ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this) {

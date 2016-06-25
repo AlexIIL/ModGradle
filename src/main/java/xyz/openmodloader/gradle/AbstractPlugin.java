@@ -14,7 +14,6 @@ import org.gradle.plugins.ide.idea.model.IdeaModel;
 import xyz.openmodloader.gradle.util.Constants;
 
 public class AbstractPlugin implements Plugin<Project> {
-
     protected Project project;
 
     @Override
@@ -108,17 +107,12 @@ public class AbstractPlugin implements Plugin<Project> {
         SourceSet main = javaModule.getSourceSets().getByName(SourceSet.MAIN_SOURCE_SET_NAME);
         SourceSet test = javaModule.getSourceSets().getByName(SourceSet.TEST_SOURCE_SET_NAME);
 
-        main.setCompileClasspath(main.getCompileClasspath()
-                .plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
-        test.setCompileClasspath(test.getCompileClasspath()
-                .plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
-        main.setRuntimeClasspath(main.getCompileClasspath()
-                .plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
-        test.setCompileClasspath(test.getCompileClasspath()
-                .plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
+        main.setCompileClasspath(main.getCompileClasspath().plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
+        test.setCompileClasspath(test.getCompileClasspath().plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
+        main.setRuntimeClasspath(main.getCompileClasspath().plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
+        test.setCompileClasspath(test.getCompileClasspath().plus(project.getConfigurations().getByName(Constants.CONFIG_MC_DEPENDENCIES)));
 
         Javadoc javadoc = (Javadoc) project.getTasks().getByName(JavaPlugin.JAVADOC_TASK_NAME);
         javadoc.setClasspath(main.getOutput().plus(main.getCompileClasspath()));
     }
-
 }

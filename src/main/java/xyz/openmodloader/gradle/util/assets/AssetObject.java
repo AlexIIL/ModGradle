@@ -16,17 +16,12 @@ public class AssetObject {
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        if ((o == null) || (getClass() != o.getClass())) {
+        } else if ((o == null) || (getClass() != o.getClass())) {
             return false;
+        } else {
+            AssetObject that = (AssetObject) o;
+            return this.size == that.size && this.hash.equals(that.hash);
         }
-
-        AssetObject that = (AssetObject) o;
-
-        if (this.size != that.size) {
-            return false;
-        }
-        return this.hash.equals(that.hash);
     }
 
     @Override

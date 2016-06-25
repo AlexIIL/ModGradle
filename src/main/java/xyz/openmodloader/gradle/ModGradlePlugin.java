@@ -10,8 +10,8 @@ public class ModGradlePlugin extends AbstractPlugin {
         super.apply(target);
 
         makeTask("download", DownloadTask.class);
-        makeTask("map", MapJarsTask.class).dependsOn("download");
-        makeTask("mergeJars", MergeJarsTask.class).dependsOn("map");
+        makeTask("mapJars", MapJarsTask.class).dependsOn("download");
+        makeTask("mergeJars", MergeJarsTask.class).dependsOn("mapJars");
         makeTask("decompile", DecompileTask.class).dependsOn("mergeJars");
         makeTask("applyPatches", PatchMinecraftTask.class).dependsOn("decompile");
         makeTask("setupOML", DefaultTask.class).dependsOn("applyPatches");
@@ -19,6 +19,6 @@ public class ModGradlePlugin extends AbstractPlugin {
         makeTask("genPatches", GenPatchesTask.class);
 
         makeTask("extractNatives", ExtractNativesTask.class).dependsOn("download");
-        makeTask("genIdeaRuns", GenIdeaProjectTask.class).dependsOn("cleanIdea").dependsOn("idea").dependsOn("extractNatives");
+        target.getTasks().getByPath("idea").dependsOn(GenIdeaProjectTask.class).dependsOn("extractNatives");
     }
 }
