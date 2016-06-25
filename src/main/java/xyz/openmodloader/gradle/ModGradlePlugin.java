@@ -19,6 +19,6 @@ public class ModGradlePlugin extends AbstractPlugin {
         makeTask("genPatches", GenPatchesTask.class);
 
         makeTask("extractNatives", ExtractNativesTask.class).dependsOn("download");
-        target.getTasks().getByPath("idea").dependsOn(GenIdeaProjectTask.class).dependsOn("extractNatives");
+        makeTask("genIdeaRuns", GenIdeaProjectTask.class).dependsOn("cleanIdea").dependsOn("idea").dependsOn("extractNatives");
     }
 }
