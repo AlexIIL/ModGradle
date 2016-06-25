@@ -15,18 +15,19 @@ public class Constants {
 
     public static final IDelayed<File> MINECRAFT_CLIENT_JAR = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-client.jar"));
     public static final IDelayed<File> MINECRAFT_SERVER_JAR = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-server.jar"));
+    public static final IDelayed<File> MINECRAFT_CLIENT_MAPPED_JAR = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-client-mapped.jar"));
+    public static final IDelayed<File> MINECRAFT_SERVER_MAPPED_JAR = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-server-mapped.jar"));
 
     public static final File SPECIALSOURCE_JAR = new File(CACHE_FILES, "SpecialSource.jar");
     public static final File FERNFLOWER_JAR = new File(CACHE_FILES, "fernflower-2.0-SNAPSHOT.jar");
 
-    public static final File MINECRAFT_MAPPED_CLIENT = new File(CACHE_FILES, "minecraft-client-mapped.jar");
-    public static final File MINECRAFT_MAPPED_SERVER = new File(CACHE_FILES, "minecraft-server-mapped.jar");
-    public static final IDelayed<File> MINECRAFT_MAPPED = new DelayedFile(extension -> new File(CACHE_FILES, "minecraft-" + extension.version + "-mapped"));
-
+    public static final IDelayed<File> MINECRAFT_MERGED = new DelayedFile(extension -> new File(CACHE_FILES, "minecraft-" + extension.version + "-merged.jar"));
     public static final IDelayed<File> MAPPING_SRG = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-mappings.srg"));
 
-    public static final File MINECRAFT_SRC_DECOMP = new File(CACHE_FILES, "srcDecomp");
+    public static final File MINECRAFT_FERN_OUTPUT =  new File(CACHE_FILES, "fernflower");
+    public static final IDelayed<File> MINECRAFT_FERN_OUTPUT_JAR = new DelayedFile(extension -> new File(MINECRAFT_FERN_OUTPUT, MINECRAFT_MERGED.get(extension).getName()));
     public static final File MINECRAFT_SRC_PATCHED = new File(CACHE_FILES, "srcPatched");
+    public static final File MINECRAFT_SRC_DECOMP = new File(CACHE_FILES, "srcDecomp");
 
     public static final File MINECRAFT_LIBS = new File(CACHE_FILES, "libs");
     public static final File MINECRAFT_NATIVES = new File(CACHE_FILES, "natives");

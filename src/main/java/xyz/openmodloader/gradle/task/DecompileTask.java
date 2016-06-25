@@ -17,61 +17,7 @@ public class DecompileTask extends AbstractTask {
     public void decompile() {
         try {
             ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
-
-            if (!Constants.MINECRAFT_MAPPED_CLIENT.exists()) {
-                this.getLogger().lifecycle(":remapping classes");
-
-                // TODO: Separate task
-                ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this)
-                {
-                    public JavaExecSpec call()
-                    {
-                        JavaExecSpec exec = (JavaExecSpec) getDelegate();
-                        exec.args(
-                                Constants.SPECIALSOURCE_JAR.getAbsolutePath(),
-                                "map",
-                                "-i",
-                                Constants.MINECRAFT_CLIENT_JAR.get(extension).getAbsolutePath(),
-                                "-m",
-                                Constants.MAPPING_SRG.get(extension).getAbsolutePath(),
-                                "-o",
-                                Constants.MINECRAFT_MAPPED_CLIENT.getAbsolutePath()
-                        );
-                        exec.setMain("-jar");
-                        exec.setWorkingDir(Constants.CACHE_FILES);
-                        exec.classpath(Constants.getClassPath());
-                        //exec.setStandardOutput(System.out); // TODO: store the logs?
-                        exec.setMaxHeapSize("512M");
-
-                        return exec;
-                    }
-
-                    public JavaExecSpec call(Object obj)
-                    {
-                        return call();
-                    }
-                });
-
-                int exitValue = result.getExitValue();
-                if (exitValue != 0) {
-                    this.getLogger().error(":SpecialSource exit value: " + exitValue);
-                    throw new RuntimeException("SpecialSource failed to decompile");
-                }
-            }
-
-            if (!Constants.MINECRAFT_MAPPED.get(extension).exists()) {
-                this.getLogger().lifecycle(":unpacking minecraft jar");
-
-                ZipUtil.unpack(Constants.MINECRAFT_MAPPED_CLIENT, Constants.MINECRAFT_MAPPED.get(extension), name -> {
-                    if (name.startsWith("net/minecraft") || name.startsWith("assets") || name.startsWith("log4j2.xml") || name.endsWith(".class")) {
-                        return name;
-                    } else {
-                        return null;
-                    }
-                });
-            }
-
-            if (!Constants.MINECRAFT_SRC_DECOMP.exists()) {
+            if (!Constants.MINECRAFT_FERN_OUTPUT_JAR.get(extension).exists()) {
                 this.getLogger().lifecycle(":decompiling Minecraft");
 
                 // TODO: Separate task
@@ -80,7 +26,7 @@ public class DecompileTask extends AbstractTask {
                     public JavaExecSpec call()
                     {
                         JavaExecSpec exec = (JavaExecSpec) getDelegate();
-                        Constants.MINECRAFT_SRC_DECOMP.mkdir();
+                        Constants.MINECRAFT_FERN_OUTPUT.mkdir();
                         exec.args(
                                 Constants.FERNFLOWER_JAR.getAbsolutePath(),
                                 "-dgs=1",
@@ -91,9 +37,10 @@ public class DecompileTask extends AbstractTask {
                                 "-rbr=0",
                                 "-rsy=1",
                                 "-ind=    ",
+                                //"-udv=1",
                                 //"-log=ERROR", //
-                                Constants.MINECRAFT_MAPPED.get(extension).getAbsolutePath(),
-                                Constants.MINECRAFT_SRC_DECOMP.getAbsolutePath()
+                                Constants.MINECRAFT_MERGED.get(extension).getAbsolutePath(),
+                                Constants.MINECRAFT_FERN_OUTPUT.getAbsolutePath()
                         );
                         exec.setMain("-jar");
                         exec.setWorkingDir(Constants.CACHE_FILES);
@@ -121,6 +68,11 @@ public class DecompileTask extends AbstractTask {
                 FileUtils.deleteDirectory(Constants.MINECRAFT_SRC_PATCHED);
             }
 
+            if (Constants.MINECRAFT_SRC_DECOMP.exists()) {
+                FileUtils.deleteDirectory(Constants.MINECRAFT_SRC_DECOMP);
+            }
+
+            ZipUtil.unpack(Constants.MINECRAFT_FERN_OUTPUT_JAR.get(extension), Constants.MINECRAFT_SRC_DECOMP);
             FileUtils.copyDirectory(Constants.MINECRAFT_SRC_DECOMP, Constants.MINECRAFT_SRC_PATCHED);
         } catch (IOException e) {
             e.printStackTrace();

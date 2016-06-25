@@ -135,6 +135,15 @@ public class GenIdeaProjectTask extends AbstractTask {
         ideaClient.arguments = "--assetIndex " + version.assetIndex.id + " --assetsDir " + new File(Constants.CACHE_FILES, "assets").getAbsolutePath();
 
         runManager.appendChild(ideaClient.genRuns(runManager));
+
+        ideaClient = new IdeaRunConfig();
+        ideaClient.mainClass = "xyz.openmodloader.launcher.OpenModLoaderServer";
+        ideaClient.projectName = getProject().getName();
+        ideaClient.configName = "Minecraft Server";
+        ideaClient.runDir = "file://$PROJECT_DIR$/" + extension.runDir;
+
+        runManager.appendChild(ideaClient.genRuns(runManager));
+
         transformerFactory = TransformerFactory.newInstance();
         transformer = transformerFactory.newTransformer();
         source = new DOMSource(doc);

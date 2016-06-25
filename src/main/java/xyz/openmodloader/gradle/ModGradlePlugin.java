@@ -3,16 +3,10 @@ package xyz.openmodloader.gradle;
 import com.google.common.collect.ImmutableMap;
 
 import org.gradle.api.plugins.JavaPlugin;
-import xyz.openmodloader.gradle.task.ExtractNativesTask;
-import xyz.openmodloader.gradle.task.GenIdeaProjectTask;
+import xyz.openmodloader.gradle.task.*;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.internal.AbstractTask;
-
-import xyz.openmodloader.gradle.task.DecompileTask;
-import xyz.openmodloader.gradle.task.DownloadTask;
-import xyz.openmodloader.gradle.task.GenPatchesTask;
-import xyz.openmodloader.gradle.task.PatchMinecraftTask;
 
 public class ModGradlePlugin implements Plugin<Project> {
     @Override
@@ -24,7 +18,9 @@ public class ModGradlePlugin implements Plugin<Project> {
         project.getExtensions().create("minecraft", ModGradleExtension.class);
 
         project.getTasks().create("download", DownloadTask.class);
-        project.getTasks().create("decompile", DecompileTask.class).dependsOn("download");
+        project.getTasks().create("map", MapJarsTask.class).dependsOn("download");
+        project.getTasks().create("mergeJars", MergeJarsTask.class).dependsOn("map");
+        project.getTasks().create("decompile", DecompileTask.class).dependsOn("mergeJars");
         project.getTasks().create("applyPatches", PatchMinecraftTask.class).dependsOn("decompile");
         project.getTasks().create("setupOML", AbstractTask.class).dependsOn("applyPatches");
 
