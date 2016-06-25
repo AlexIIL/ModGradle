@@ -2,7 +2,7 @@ package xyz.openmodloader.gradle.task;
 
 import groovy.lang.Closure;
 import org.apache.commons.io.FileUtils;
-import org.gradle.api.internal.AbstractTask;
+import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.process.ExecResult;
 import org.gradle.process.JavaExecSpec;
@@ -12,7 +12,7 @@ import xyz.openmodloader.gradle.util.Constants;
 
 import java.io.IOException;
 
-public class DecompileTask extends AbstractTask {
+public class DecompileTask extends DefaultTask {
     @TaskAction
     public void decompile() {
         try {

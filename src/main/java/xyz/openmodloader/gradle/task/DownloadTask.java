@@ -3,9 +3,9 @@ package xyz.openmodloader.gradle.task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.io.FileUtils;
+import org.gradle.api.DefaultTask;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
-import org.gradle.api.internal.AbstractTask;
 import org.gradle.api.tasks.TaskAction;
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Checksum;
@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
-public class DownloadTask extends AbstractTask {
+public class DownloadTask extends DefaultTask {
     @TaskAction
     public void download() {
         try {

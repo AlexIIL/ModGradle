@@ -4,15 +4,15 @@ import com.cloudbees.diff.Diff;
 import com.google.common.base.Charsets;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.TaskAction;
 import xyz.openmodloader.gradle.ModGradleExtension;
 import xyz.openmodloader.gradle.util.Constants;
-import org.apache.commons.io.FileUtils;
-import org.gradle.api.internal.AbstractTask;
-import org.gradle.api.tasks.TaskAction;
 
 import java.io.*;
 
-public class GenPatchesTask extends AbstractTask {
+public class GenPatchesTask extends DefaultTask {
     @TaskAction
     public void genPatches() {
         try {

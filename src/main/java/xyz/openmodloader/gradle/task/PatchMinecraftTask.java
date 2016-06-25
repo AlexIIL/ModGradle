@@ -2,6 +2,13 @@ package xyz.openmodloader.gradle.task;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
+import difflib.DiffUtils;
+import difflib.Patch;
+import difflib.PatchFailedException;
+import org.apache.commons.io.FileUtils;
+import org.gradle.api.DefaultTask;
+import org.gradle.api.tasks.TaskAction;
+import xyz.openmodloader.gradle.util.Constants;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,17 +16,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-
-import org.gradle.api.internal.AbstractTask;
-import org.gradle.api.tasks.TaskAction;
-
-import difflib.DiffUtils;
-import difflib.Patch;
-import difflib.PatchFailedException;
-import xyz.openmodloader.gradle.util.Constants;
-
-public class PatchMinecraftTask extends AbstractTask {
+public class PatchMinecraftTask extends DefaultTask {
     @TaskAction
     public void patchMinecraft() {
         try {

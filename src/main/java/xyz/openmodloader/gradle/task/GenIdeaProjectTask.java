@@ -1,17 +1,17 @@
 package xyz.openmodloader.gradle.task;
 
 import com.google.gson.Gson;
-import xyz.openmodloader.gradle.ModGradleExtension;
-import xyz.openmodloader.gradle.util.IdeaRunConfig;
-import xyz.openmodloader.gradle.util.Version;
-import xyz.openmodloader.gradle.util.Constants;
-import org.gradle.api.internal.AbstractTask;
+import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.TaskAction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+import xyz.openmodloader.gradle.ModGradleExtension;
+import xyz.openmodloader.gradle.util.Constants;
+import xyz.openmodloader.gradle.util.IdeaRunConfig;
+import xyz.openmodloader.gradle.util.Version;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -26,7 +26,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class GenIdeaProjectTask extends AbstractTask {
+public class GenIdeaProjectTask extends DefaultTask {
     @TaskAction
     public void genIdeaRuns() throws IOException, ParserConfigurationException, SAXException, TransformerException {
         ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
