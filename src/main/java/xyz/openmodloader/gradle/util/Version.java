@@ -80,8 +80,9 @@ public class Version {
         }
 
         public String getArtifactName() {
-            if (artifact == null)
+            if (artifact == null) {
                 artifact = new Artifact(name);
+            }
             return artifact.getArtifact(natives == null ? artifact.getClassifier() : natives.get(OperatingSystem.getOS()).getAsString());
         }
 
@@ -94,7 +95,9 @@ public class Version {
                 if (idx != -1) {
                     ext = splitedArtifact[splitedArtifact.length - 1].substring(idx + 1);
                     splitedArtifact[splitedArtifact.length - 1] = splitedArtifact[splitedArtifact.length - 1].substring(0, idx);
-                } else ext = "jar";
+                } else {
+                    ext = "jar";
+                }
                 this.domain = splitedArtifact[0];
                 this.name = splitedArtifact[1];
                 this.version = splitedArtifact[2];
@@ -103,10 +106,15 @@ public class Version {
 
             public String getArtifact(String classifier) {
                 String ret = domain + ":" + name + ":" + version;
-                if (classifier != null && classifier.indexOf('$') > -1)
+                if (classifier != null && classifier.indexOf('$') > -1) {
                     classifier = classifier.replace("${arch}", Constants.SYSTEM_ARCH);
-                if (classifier != null) ret += ":" + classifier;
-                if (!"jar".equals(ext)) ret += "@" + ext;
+                }
+                if (classifier != null) {
+                    ret += ":" + classifier;
+                }
+                if (!"jar".equals(ext)) {
+                    ret += "@" + ext;
+                }
                 return ret;
             }
 
@@ -115,7 +123,9 @@ public class Version {
                 if (classifier != null && classifier.indexOf('$') > -1) {
                     classifier = classifier.replace("${arch}", Constants.SYSTEM_ARCH.toString());
                 }
-                if (classifier != null) ret += "-" + classifier;
+                if (classifier != null) {
+                    ret += "-" + classifier;
+                }
                 return ret + "." + ext;
             }
 

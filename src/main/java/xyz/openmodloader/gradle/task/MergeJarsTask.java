@@ -61,10 +61,10 @@ public class MergeJarsTask extends DefaultTask {
         ModGradleExtension extension = this.getProject().getExtensions().getByType(ModGradleExtension.class);
         File tempMerge = new File(Constants.CACHE_FILES, "tempMerge.jar");
         File tempClean = new File(Constants.CACHE_FILES, "tempClean");
-        if(tempMerge.exists()){
+        if (tempMerge.exists()) {
             tempMerge.delete();
         }
-        if(tempClean.exists()){
+        if (tempClean.exists()) {
             FileUtils.deleteDirectory(tempClean);
         }
         processJar(Constants.MINECRAFT_CLIENT_MAPPED_JAR.get(extension), Constants.MINECRAFT_SERVER_MAPPED_JAR.get(extension), tempMerge);
@@ -77,10 +77,10 @@ public class MergeJarsTask extends DefaultTask {
             }
         });
         ZipUtil.pack(tempClean, Constants.MINECRAFT_MERGED.get(extension));
-        if(tempMerge.exists()){
+        if (tempMerge.exists()) {
             tempMerge.delete();
         }
-        if(tempClean.exists()){
+        if (tempClean.exists()) {
             FileUtils.deleteDirectory(tempClean);
         }
     }
@@ -287,8 +287,9 @@ public class MergeJarsTask extends DefaultTask {
         List<FieldNode> sFields = sClass.fields;
 
         int serverFieldIdx = 0;
-        if (DEBUG)
+        if (DEBUG) {
             System.out.printf("B: Server List: %s\nB: Client List: %s\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance));
+        }
         for (int clientFieldIdx = 0; clientFieldIdx < cFields.size(); clientFieldIdx++) {
             FieldNode clientField = cFields.get(clientFieldIdx);
             if (serverFieldIdx < sFields.size()) {
@@ -316,8 +317,9 @@ public class MergeJarsTask extends DefaultTask {
                             }
                             serverField.visibleAnnotations.add(getSideAnn(false));
                             cFields.add(clientFieldIdx, serverField);
-                            if (DEBUG)
+                            if (DEBUG) {
                                 System.out.printf("1. Server List: %s\n1. Client List: %s\nIdx: %d %d\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance), serverFieldIdx, clientFieldIdx);
+                            }
                         }
                     } else {
                         if (clientField.visibleAnnotations == null) {
@@ -325,8 +327,9 @@ public class MergeJarsTask extends DefaultTask {
                         }
                         clientField.visibleAnnotations.add(getSideAnn(true));
                         sFields.add(serverFieldIdx, clientField);
-                        if (DEBUG)
+                        if (DEBUG) {
                             System.out.printf("2. Server List: %s\n2. Client List: %s\nIdx: %d %d\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance), serverFieldIdx, clientFieldIdx);
+                        }
                     }
                 }
             } else {
@@ -335,13 +338,15 @@ public class MergeJarsTask extends DefaultTask {
                 }
                 clientField.visibleAnnotations.add(getSideAnn(true));
                 sFields.add(serverFieldIdx, clientField);
-                if (DEBUG)
+                if (DEBUG) {
                     System.out.printf("3. Server List: %s\n3. Client List: %s\nIdx: %d %d\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance), serverFieldIdx, clientFieldIdx);
+                }
             }
             serverFieldIdx++;
         }
-        if (DEBUG)
+        if (DEBUG) {
             System.out.printf("A. Server List: %s\nA. Client List: %s\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance));
+        }
         if (sFields.size() != cFields.size()) {
             for (int x = cFields.size(); x < sFields.size(); x++) {
                 FieldNode sF = sFields.get(x);
@@ -352,8 +357,9 @@ public class MergeJarsTask extends DefaultTask {
                 cFields.add(x++, sF);
             }
         }
-        if (DEBUG)
+        if (DEBUG) {
             System.out.printf("E. Server List: %s\nE. Client List: %s\n", Lists.transform(sFields, FieldName.instance), Lists.transform(cFields, FieldName.instance));
+        }
     }
 
     private static class FieldName implements Function<FieldNode, String> {

@@ -24,7 +24,7 @@ public class Constants {
     public static final IDelayed<File> MINECRAFT_MERGED = new DelayedFile(extension -> new File(CACHE_FILES, "minecraft-" + extension.version + "-merged.jar"));
     public static final IDelayed<File> MAPPING_SRG = new DelayedFile(extension -> new File(CACHE_FILES, extension.version + "-mappings.srg"));
 
-    public static final File MINECRAFT_FERN_OUTPUT =  new File(CACHE_FILES, "fernflower");
+    public static final File MINECRAFT_FERN_OUTPUT = new File(CACHE_FILES, "fernflower");
     public static final IDelayed<File> MINECRAFT_FERN_OUTPUT_JAR = new DelayedFile(extension -> new File(MINECRAFT_FERN_OUTPUT, MINECRAFT_MERGED.get(extension).getName()));
     public static final File MINECRAFT_SRC_PATCHED = new File(CACHE_FILES, "srcPatched");
     public static final File MINECRAFT_SRC_DECOMP = new File(CACHE_FILES, "srcDecomp");
@@ -55,13 +55,13 @@ public class Constants {
     public static final String CONFIG_MC_DEPENDENCIES_CLIENT = "MC_DEPENDENCIES_CLIENT";
     public static final String SYSTEM_ARCH = System.getProperty("os.arch").equals("64") ? "64" : "32";
 
-    public static List<String> getClassPath()
-    {
+    public static List<String> getClassPath() {
         URL[] urls = ((URLClassLoader) Constants.class.getClassLoader()).getURLs();
 
         ArrayList<String> list = new ArrayList<>();
-        for (URL url : urls)
+        for (URL url : urls) {
             list.add(url.getPath());
+        }
         return list;
     }
 }

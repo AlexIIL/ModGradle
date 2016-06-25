@@ -11,8 +11,10 @@ import java.io.FileNotFoundException;
 public class ExtractNativesTask extends DefaultTask {
     @TaskAction
     public void extractNatives() throws FileNotFoundException {
-        if (!Constants.MINECRAFT_NATIVES.exists())
-            for (File source : getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES))
+        if (!Constants.MINECRAFT_NATIVES.exists()) {
+            for (File source : getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES)) {
                 ZipUtil.unpack(source, Constants.MINECRAFT_NATIVES);
+            }
+        }
     }
 }

@@ -18,15 +18,18 @@ public class AssetObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if ((o == null) || (getClass() != o.getClass()))
+        }
+        if ((o == null) || (getClass() != o.getClass())) {
             return false;
+        }
 
         AssetObject that = (AssetObject) o;
 
-        if (this.size != that.size)
+        if (this.size != that.size) {
             return false;
+        }
         return this.hash.equals(that.hash);
     }
 

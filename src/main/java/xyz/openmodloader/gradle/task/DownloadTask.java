@@ -78,15 +78,17 @@ public class DownloadTask extends DefaultTask {
                     if (library.allowed() && library.getFile() != null) {
                         // By default, they are all available on all sides
                         String configName = Constants.CONFIG_MC_DEPENDENCIES;
-                        if (library.name.contains("java3d") || library.name.contains("paulscode") || library.name.contains("lwjgl") || library.name.contains("twitch") || library.name.contains("jinput"))
+                        if (library.name.contains("java3d") || library.name.contains("paulscode") || library.name.contains("lwjgl") || library.name.contains("twitch") || library.name.contains("jinput")) {
                             configName = Constants.CONFIG_MC_DEPENDENCIES_CLIENT;
+                        }
                         dependencyHandler.add(configName, library.getArtifactName());
                     }
                 }
             }
 
-            if (getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES).getState() == Configuration.State.UNRESOLVED)
+            if (getProject().getConfigurations().getByName(Constants.CONFIG_NATIVES).getState() == Configuration.State.UNRESOLVED) {
                 version.libraries.stream().filter(lib -> lib.natives != null).forEach(lib -> dependencyHandler.add(Constants.CONFIG_NATIVES, lib.getArtifactName()));
+            }
 
             // Force add LaunchWrapper
             dependencyHandler.add(Constants.CONFIG_MC_DEPENDENCIES, "net.minecraft:launchwrapper:1.11");
@@ -121,9 +123,10 @@ public class DownloadTask extends DefaultTask {
                 }
                 String assetName = entry.getKey();
                 int end = assetName.lastIndexOf("/") + 1;
-                if (end > 0)
+                if (end > 0) {
                     assetName = assetName.substring(end, assetName.length());
-                progressLogger.progress(assetName + " - " + position + "/" + totalSize + " (" + (int)((position / (double)totalSize) * 100) +  "%) assets downloaded");
+                }
+                progressLogger.progress(assetName + " - " + position + "/" + totalSize + " (" + (int) ((position / (double) totalSize) * 100) + "%) assets downloaded");
                 position++;
             }
             progressLogger.completed();

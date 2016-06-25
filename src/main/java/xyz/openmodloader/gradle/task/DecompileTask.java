@@ -21,10 +21,8 @@ public class DecompileTask extends DefaultTask {
                 this.getLogger().lifecycle(":decompiling Minecraft");
 
                 // TODO: Separate task
-                ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this)
-                {
-                    public JavaExecSpec call()
-                    {
+                ExecResult result = getProject().javaexec(new Closure<JavaExecSpec>(this) {
+                    public JavaExecSpec call() {
                         JavaExecSpec exec = (JavaExecSpec) getDelegate();
                         Constants.MINECRAFT_FERN_OUTPUT.mkdir();
                         exec.args(
@@ -51,8 +49,7 @@ public class DecompileTask extends DefaultTask {
                         return exec;
                     }
 
-                    public JavaExecSpec call(Object obj)
-                    {
+                    public JavaExecSpec call(Object obj) {
                         return call();
                     }
                 });
