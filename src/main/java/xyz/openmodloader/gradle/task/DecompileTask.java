@@ -36,7 +36,7 @@ public class DecompileTask extends DefaultTask {
                                 "-rsy=1",
                                 "-ind=    ",
                                 //"-udv=1",
-                                //"-log=ERROR", //
+                                "-log=ERROR",
                                 Constants.MINECRAFT_MERGED.get(extension).getAbsolutePath(),
                                 Constants.MINECRAFT_FERN_OUTPUT.getAbsolutePath()
                         );
