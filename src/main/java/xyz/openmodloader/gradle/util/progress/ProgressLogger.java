@@ -28,6 +28,23 @@ public class ProgressLogger {
         this.completedArg = getMethod("completed", String.class);
     }
 
+    private static Class<?> getFactoryClass() {
+        Class<?> progressLoggerFactoryClass = null;
+        try {
+            //Gradle 2.14 and higher
+            progressLoggerFactoryClass = Class.forName(
+                    "org.gradle.internal.logging.progress.ProgressLoggerFactory");
+        } catch (ClassNotFoundException e) {
+            //prior to Gradle 2.14
+            try {
+                progressLoggerFactoryClass = Class.forName("org.gradle.logging.ProgressLoggerFactory");
+            } catch (ClassNotFoundException e1) {
+                // Unsupported Gradle version
+            }
+        }
+        return progressLoggerFactoryClass;
+    }
+
     private Method getMethod(String methodName, Class<?>... args) {
 
         if (logger != null) {
@@ -43,9 +60,10 @@ public class ProgressLogger {
     private Object invoke(Method method, Object... args) {
         if (logger != null) {
             try {
+                method.setAccessible(true);
                 return method.invoke(logger, args);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            } catch (IllegalAccessException | InvocationTargetException ignored) {
+
             }
         }
         return null;
@@ -63,7 +81,7 @@ public class ProgressLogger {
             Method getServices = project.getClass().getMethod("getServices");
             Object serviceFactory = getServices.invoke(project);
             Method get = serviceFactory.getClass().getMethod("get", Class.class);
-            Object progressLoggerFactory = get.invoke(serviceFactory, Class.forName("org.gradle.internal.logging.progress.ProgressLoggerFactory"));
+            Object progressLoggerFactory = get.invoke(serviceFactory, getFactoryClass());
             Method newOperation = progressLoggerFactory.getClass().getMethod("newOperation", String.class);
             return new ProgressLogger(newOperation.invoke(progressLoggerFactory, category));
         } catch (Exception e) {

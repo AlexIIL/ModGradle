@@ -44,14 +44,13 @@ public class DownloadNewTask extends DefaultTask {
         connect.setInstanceFollowRedirects(true);
 
         ProgressLogger progressLogger = ProgressLogger.getProgressFactory(getProject(), getClass().getName());
-        progressLogger.setDescription(getTaskName());
-        progressLogger.started("Downloading " + getURL());
+        progressLogger.setDescription("Downloading " + getURL());
         ReadableByteChannel inChannel = new DownloadChannel(Channels.newChannel(connect.getInputStream()), getContentLength(url), progressLogger);
         FileChannel outChannel = new FileOutputStream(outputFile).getChannel();
         outChannel.transferFrom(inChannel, 0, Long.MAX_VALUE);
         outChannel.close();
         inChannel.close();
-        progressLogger.progress("Download complete");
+        progressLogger.completed();
         getLogger().info("Download complete");
     }
 

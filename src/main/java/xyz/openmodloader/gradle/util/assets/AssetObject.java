@@ -1,0 +1,39 @@
+package xyz.openmodloader.gradle.util.assets;
+
+/**
+ * Representation of an Asset
+ * Created by Thog the 26/06/2016
+ */
+public class AssetObject {
+    private String hash;
+    private long size;
+
+    public String getHash() {
+        return this.hash;
+    }
+
+    public long getSize() {
+        return this.size;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if ((o == null) || (getClass() != o.getClass()))
+            return false;
+
+        AssetObject that = (AssetObject) o;
+
+        if (this.size != that.size)
+            return false;
+        return this.hash.equals(that.hash);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = this.hash.hashCode();
+        result = 31 * result + (int) (this.size ^ this.size >>> 32);
+        return result;
+    }
+}

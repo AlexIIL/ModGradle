@@ -2,9 +2,6 @@ package xyz.openmodloader.gradle.task;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import org.apache.commons.io.FileUtils;
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.dsl.DependencyHandler;
@@ -15,6 +12,9 @@ import xyz.openmodloader.gradle.util.Checksum;
 import xyz.openmodloader.gradle.util.Constants;
 import xyz.openmodloader.gradle.util.ManifestVersion;
 import xyz.openmodloader.gradle.util.Version;
+import xyz.openmodloader.gradle.util.assets.AssetIndex;
+import xyz.openmodloader.gradle.util.assets.AssetObject;
+import xyz.openmodloader.gradle.util.progress.ProgressLogger;
 
 import java.io.File;
 import java.io.FileReader;
@@ -104,18 +104,29 @@ public class DownloadTask extends AbstractTask {
                 FileUtils.copyURLToFile(new URL(assetIndex.url), assetsInfo);
             }
 
-            Map<String, JsonObject> map = new Gson().fromJson(new FileReader(assetsInfo), new TypeToken<Map<String, JsonObject>>() {
-            }.getType());
-            JsonObject parent = map.get("objects").getAsJsonObject();
-            for (Map.Entry<String, JsonElement> entry : parent.entrySet()) {
-                JsonObject object = entry.getValue().getAsJsonObject();
-                String sha1 = object.get("hash").getAsString();
+            ProgressLogger progressLogger = ProgressLogger.getProgressFactory(getProject(), getClass().getName());
+            progressLogger.start("Downloading assets...", "assets");
+            AssetIndex index = new Gson().fromJson(new FileReader(assetsInfo), AssetIndex.class);
+            Map<String, AssetObject> parent = index.getFileMap();
+            final int totalSize = parent.size();
+            int position = 0;
+            this.getLogger().lifecycle(":downloading assets...");
+            for (Map.Entry<String, AssetObject> entry : parent.entrySet()) {
+                AssetObject object = entry.getValue();
+                String sha1 = object.getHash();
                 File file = new File(assets, "objects" + File.separator + sha1.substring(0, 2) + File.separator + sha1);
                 if (!file.exists() || !Checksum.equals(file, sha1)) {
-                    this.getLogger().lifecycle(":downloading asset " + entry.getKey());
+                    this.getLogger().debug(":downloading asset " + entry.getKey());
                     FileUtils.copyURLToFile(new URL(Constants.RESOURCES_BASE + sha1.substring(0, 2) + "/" + sha1), file);
                 }
+                String assetName = entry.getKey();
+                int end = assetName.lastIndexOf("/") + 1;
+                if (end > 0)
+                    assetName = assetName.substring(end, assetName.length());
+                progressLogger.progress(assetName + " - " + position + "/" + totalSize + " (" + (int)((position / (double)totalSize) * 100) +  "%) assets downloaded");
+                position++;
             }
+            progressLogger.completed();
         } catch (IOException e) {
             e.printStackTrace();
         }
