@@ -1,9 +1,5 @@
 package xyz.openmodloader.gradle.util.assets;
 
-/**
- * Representation of an Asset
- * Created by Thog the 26/06/2016
- */
 public class AssetObject {
     private String hash;
     private long size;
