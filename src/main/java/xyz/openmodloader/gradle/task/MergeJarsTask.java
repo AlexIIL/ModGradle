@@ -70,7 +70,7 @@ public class MergeJarsTask extends DefaultTask {
         processJar(Constants.MINECRAFT_CLIENT_MAPPED_JAR.get(extension), Constants.MINECRAFT_SERVER_MAPPED_JAR.get(extension), tempMerge);
 
         ZipUtil.unpack(tempMerge, tempClean, name -> {
-            if (name.startsWith("net/minecraft") || name.startsWith("assets") || name.startsWith("log4j2.xml")) {
+            if (name.startsWith("net/minecraft") || name.startsWith("assets") || name.startsWith("log4j2.xml") || (name.endsWith(".class") && !name.contains("/"))) {
                 return name;
             } else {
                 return null;
